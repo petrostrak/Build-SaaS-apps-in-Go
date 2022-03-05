@@ -25,7 +25,13 @@ func main() {
 	http.ListenAndServe(":8080", app)
 }
 
-func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func shiftPath(p string) (head, tail string)
+
+func (h *App) log(next http.Handler) http.Handler
+
+func (h *App) test(next http.Handler) http.Handler
+
+func (h *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var next *Route
 	var head string
 
