@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -77,7 +78,12 @@ func (h *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	next.Handler.ServeHTTP(w, r)
 }
 
-func (u User) Detail(w http.ResponseWriter, r *http.Request)
+func (u User) Detail(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	v := ctx.Value(ctxTestKey)
+	id := ctx.Value(ctxUserID)
+	w.Write([]byte(fmt.Sprintf("value of context is %s for user id %d.", v, id)))
+}
 
 func (u User) Profile(w http.ResponseWriter, r *http.Request)
 
