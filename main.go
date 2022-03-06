@@ -18,6 +18,13 @@ type App struct {
 
 type User struct{}
 
+type key int
+
+const (
+	ctxTestKey key = 1
+	ctxUserID      = 2
+)
+
 func main() {
 	app := &App{
 		User: &Route{
@@ -69,6 +76,10 @@ func (h *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	next.Handler.ServeHTTP(w, r)
 }
+
+func (u User) Detail(w http.ResponseWriter, r *http.Request)
+
+func (u User) Profile(w http.ResponseWriter, r *http.Request)
 
 func (u User) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var head string
