@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+	"strconv"
+)
 
 type Route struct {
 	Logger  bool
@@ -64,4 +68,27 @@ func (h *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	next.Handler.ServeHTTP(w, r)
+}
+
+func (u User) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var head string
+	head, r.URL.Path = shiftPath(r.URL.Path)
+	if head == "profile" {
+		u.Profile(w, r)
+		return
+	} else if head == "detail" {
+		head, _ := shiftPath(r.URL.Path)
+		i, err := strconv.Atoi(head)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, ctxUserID, i)
+		u.Detail(w, r.WithContext(ctx))
+		return
+	}
+
+	http.Error(w, "not found", http.StatusNotFound)
 }
